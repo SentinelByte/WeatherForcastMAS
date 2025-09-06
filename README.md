@@ -5,6 +5,8 @@ It is designed for learning MAS concepts and for practical use as a personal wea
 
 ---
 
+`Owner: DanCohVax`
+
 ## 🚀 Features
 - **Daily Weather Plan** → Fetches today’s conditions & suggests an activity.
 - **Weekly Forecast** → Stores 7-day weather outlook.

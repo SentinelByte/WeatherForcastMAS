@@ -207,9 +207,10 @@ marimo/_lsp/
 __marimo__/
 
 # Project-specific ignores
-# API keys and configs
+# API keys and configs. use it internally only. do not commit it.
+# You can use the template within the 'config.example.py' file.
 utils/config.py
 
 # Optional: local data files
-data/today.json
-data/forecast.json
+# data/today.json
+# data/forecast.json

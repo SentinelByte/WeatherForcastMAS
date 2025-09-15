@@ -1,0 +1,4 @@
+requests>=2.31.0
+streamlit>=1.30.0
+pandas>=2.0.0  # if you do data analysis later
+matplotlib>=3.8.0  # if plotting graphs

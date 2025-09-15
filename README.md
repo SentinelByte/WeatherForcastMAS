@@ -142,5 +142,3 @@ Use cron (Linux/macOS) or Task Scheduler (Windows) to automate:
 ## 📜 License
 
 MIT License – feel free to use and modify.
-
-```

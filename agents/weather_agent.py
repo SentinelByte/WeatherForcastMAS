@@ -1,14 +1,18 @@
 import requests
 import json
 import os
+from datetime import datetime
 from utils.config import API_KEY, CITY, UNITS
 
 class WeatherAgent:
-    def __init__(self):
+    def __init__(self, event_bus=None):
         self.api_url = "http://api.weatherstack.com/current"
-        self.data_path = os.path.join("data", "today.json")
+        self.today_path = os.path.join("data", "today.json")
+        self.history_path = os.path.join("data", "history", "weather_history.json")
+        os.makedirs(os.path.join("data", "history"), exist_ok=True)
+        self.event_bus = event_bus  # optional EventBus
 
-    def run(self):
+    def fetch_weather(self):
         params = {
             "access_key": API_KEY,
             "query": CITY,
@@ -16,29 +20,51 @@ class WeatherAgent:
         }
         response = requests.get(self.api_url, params=params)
         data = response.json()
-
-        if "current" in data:
-            today_weather = {
-                "city": CITY,
-                "temperature": data["current"]["temperature"],
-                "weather_descriptions": data["current"]["weather_descriptions"],
-                "humidity": data["current"]["humidity"],
-                "wind_speed": data["current"]["wind_speed"]
-            }
-
-            # Save to JSON
-            os.makedirs("data", exist_ok=True)
-            with open(self.data_path, "w") as f:
-                json.dump(today_weather, f, indent=4)
-
-            print(f"Today's weather in {CITY}:")
-            print(today_weather)
-            return today_weather
-        else:
+        if "current" not in data:
             print("Error fetching weather:", data)
             return None
 
-# Run standalone
+        # Add timestamp
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "city": CITY,
+            "temperature": data["current"]["temperature"],
+            "weather_descriptions": data["current"]["weather_descriptions"],
+            "humidity": data["current"]["humidity"],
+            "wind_speed": data["current"]["wind_speed"]
+        }
+
+    def save_today(self, today_weather):
+        with open(self.today_path, "w") as f:
+            json.dump(today_weather, f, indent=4)
+
+    def append_history(self, today_weather):
+        history = []
+        if os.path.exists(self.history_path):
+            with open(self.history_path, "r") as f:
+                try:
+                    history = json.load(f)
+                except json.JSONDecodeError:
+                    history = []
+        history.append(today_weather)
+        with open(self.history_path, "w") as f:
+            json.dump(history, f, indent=4)
+
+    def run(self):
+        today_weather = self.fetch_weather()
+        if today_weather:
+            self.save_today(today_weather)
+            self.append_history(today_weather)
+            print(f"Today's weather in {CITY}:")
+            print(today_weather)
+
+            # Publish event for other agents
+            if self.event_bus:
+                self.event_bus.publish("weather_updated", today_weather)
+
+            return today_weather
+        return None
+
 if __name__ == "__main__":
     agent = WeatherAgent()
     agent.run()

@@ -8,11 +8,13 @@ It is designed for learning MAS concepts and for practical use as a personal wea
 `Owner: DanCohVax`
 
 ## 🚀 Features
-- **Daily Weather Plan** → Fetches today’s conditions & suggests an activity.
+- **Daily Weather Plan** → Fetches today’s conditions & suggests a randomized activity.
 - **Weekly Forecast** → Stores 7-day weather outlook.
-- **Automatic Updates** → Refreshes forecast every 6 hours.
+- **Automatic Updates** → Refreshes forecast every 6 hours via UpdateAgent.
 - **Dashboard** → View data in a Streamlit-powered local web app.
-- **Lightweight & Free** → Uses OpenWeatherMap free API tier.
+- **Event-Driven MAS** → Agents communicate via a simple Pub/Sub EventBus.
+- **History Tracking** → Maintains daily weather and activity history with timestamps.
+- **Lightweight & Free** → Uses free-tier weather APIs.
 
 ---
 
@@ -22,29 +24,29 @@ It is designed for learning MAS concepts and for practical use as a personal wea
 weather\_mas/
 │
 ├── agents/                          # all agents live here
-│   ├── weather_agent.py              # fetch today’s weather, update history, publish event
-│   ├── planner_agent.py              # suggest activities, update history, subscribe to weather events
-│   ├── forecast_agent.py             # fetch 7-day forecast, update history
-│   ├── update_agent.py               # refresh forecast & notify planner periodically
-│   └── display_agent.py              # output via console or Streamlit dashboard
+│   ├── weather\_agent.py              # fetch today’s weather, update history, publish event
+│   ├── planner\_agent.py              # suggest activities, update history, subscribe to weather events
+│   ├── forecast\_agent.py             # fetch 7-day forecast, update history
+│   ├── update\_agent.py               # refresh forecast & notify planner periodically
+│   └── display\_agent.py              # output via console or Streamlit dashboard
 │
 ├── data/                             # storage for JSON / DB
 │   ├── today.json                     # latest weather
 │   ├── forecast.json                  # 7-day forecast
 │   └── history/                       # historical records
-│       ├── weather_history.json       # daily weather records with timestamps
-│       └── activity_history.json      # daily activity suggestions with timestamps
+│       ├── weather\_history.json       # daily weather records with timestamps
+│       └── activity\_history.json      # daily activity suggestions with timestamps
 │
 ├── dashboard/                        # Streamlit dashboard files
 │   └── app.py
 │
 ├── utils/                            # helpers (logging, API calls, config)
-│   ├── api_client.py
+│   ├── api\_client.py
 │   ├── config.py                      # API keys, city, units
-│   └── event_bus.py                   # simple Pub/Sub EventBus implementation
+│   └── event\_bus.py                   # simple Pub/Sub EventBus implementation
 │
 ├── main.py                            # entry point → runs daily workflow using agents
-├── main_event_mas.py                  # optional: MAS workflow with EventBus and dashboard
+├── main\_event\_mas.py                  # optional: MAS workflow with EventBus and dashboard
 ├── update.py                          # entry point → runs every 6h (Update Agent)
 ├── requirements.txt                   # dependencies: requests, streamlit, etc.
 └── README.md
@@ -54,17 +56,17 @@ weather\_mas/
 ---
 
 ## ⚙️ Configuration
-Create a `utils/config.py` file with your OpenWeatherMap API key:
+Create a `utils/config.py` file with your weather API key:
 
 ```python
-API_KEY = "your_openweathermap_api_key"
+API_KEY = "your_weather_api_key"
 CITY = "Berlin"
 UNITS = "metric"  # "imperial" for Fahrenheit
 ````
 
-You can get a free API key from [OpenWeatherMap](https://openweathermap.org/api).
+You can use [WeatherStack](https://weatherstack.com/) or another free API.
 
-> ⚠️ Do **not** commit `config.py` to GitHub. Keep it ignored in `.gitignore`. Use a `config.example.py` instead.
+> ⚠️ Do **not** commit `config.py` to GitHub. Use `config.example.py` instead.
 
 ---
 
@@ -91,6 +93,12 @@ You can get a free API key from [OpenWeatherMap](https://openweathermap.org/api)
 
 ```bash
 python main.py
+```
+
+### Run EventBus MAS (optional, with dashboard & inter-agent events)
+
+```bash
+python main_event_mas.py
 ```
 
 ### Run Forecast Updater (every 6h, via cron/Task Scheduler)
@@ -127,6 +135,7 @@ Use cron (Linux/macOS) or Task Scheduler (Windows) to automate:
 * [ ] Store historical weather in SQLite
 * [ ] Email/Telegram notifications
 * [ ] Grafana/Streamlit advanced dashboard
+* [ ] Add AI-powered activity recommendations
 
 ---
 
@@ -135,12 +144,3 @@ Use cron (Linux/macOS) or Task Scheduler (Windows) to automate:
 MIT License – feel free to use and modify.
 
 ```
-
----
-
-This README is **ready to drop** in your repo. It covers:  
-- Project purpose  
-- Features  
-- Folder structure  
-- Setup & usage instructions  
-- Automation & roadmap  

@@ -1,9 +1,0 @@
-{
-    "city": "Berlin",
-    "temperature": 20,
-    "weather_descriptions": [
-        "Partly Cloudy "
-    ],
-    "humidity": 56,
-    "wind_speed": 8
-}

@@ -21,28 +21,33 @@ It is designed for learning MAS concepts and for practical use as a personal wea
 
 weather\_mas/
 │
-├── agents/                # Agent implementations
-│   ├── weather\_agent.py
-│   ├── planner\_agent.py
-│   ├── forecast\_agent.py
-│   ├── update\_agent.py
-│   └── display\_agent.py
+├── agents/                          # all agents live here
+│   ├── weather_agent.py              # fetch today’s weather, update history, publish event
+│   ├── planner_agent.py              # suggest activities, update history, subscribe to weather events
+│   ├── forecast_agent.py             # fetch 7-day forecast, update history
+│   ├── update_agent.py               # refresh forecast & notify planner periodically
+│   └── display_agent.py              # output via console or Streamlit dashboard
 │
-├── data/                  # Stores JSON files
-│   ├── today.json
-│   └── forecast.json
+├── data/                             # storage for JSON / DB
+│   ├── today.json                     # latest weather
+│   ├── forecast.json                  # 7-day forecast
+│   └── history/                       # historical records
+│       ├── weather_history.json       # daily weather records with timestamps
+│       └── activity_history.json      # daily activity suggestions with timestamps
 │
-├── dashboard/             # Visualization (Streamlit app)
+├── dashboard/                        # Streamlit dashboard files
 │   └── app.py
 │
-├── utils/                 # Config & helpers
-│   ├── api\_client.py
-│   └── config.py
+├── utils/                            # helpers (logging, API calls, config)
+│   ├── api_client.py
+│   ├── config.py                      # API keys, city, units
+│   └── event_bus.py                   # simple Pub/Sub EventBus implementation
 │
-├── main.py                # Daily workflow entry point
-├── update.py              # Forecast updater entry point
-├── requirements.txt       # Dependencies
-└── README.md              # Documentation
+├── main.py                            # entry point → runs daily workflow using agents
+├── main_event_mas.py                  # optional: MAS workflow with EventBus and dashboard
+├── update.py                          # entry point → runs every 6h (Update Agent)
+├── requirements.txt                   # dependencies: requests, streamlit, etc.
+└── README.md
 
 ````
 
